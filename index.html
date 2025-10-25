@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assistente Estatístico</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 0;
+        }
+
+        .sidebar {
+            background: #f8f9fa;
+            padding: 30px;
+            border-right: 1px solid #e0e0e0;
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
+
+        .main-panel {
+            padding: 30px;
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            margin: 0;
+            font-weight: 400;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-download {
+            padding: 10px 20px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 10px;
+            margin-right: 10px;
+        }
+
+        .btn-download:hover {
+            background: #218838;
+        }
+
+        .btn-copy {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-copy:hover {
+            background: #0056b3;
+        }
+
+        .btn-copy.copied {
+            background: #28a745;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .section-title {
+            font-weight: 700;
+            font-size: 18px;
+            color: #667eea;
+            margin: 20px 0 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .recommendation-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .recommendation-box strong {
+            color: #333;
+            font-size: 16px;
+        }
+
+        .recommendation-box ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .recommendation-box li {
+            margin: 5px 0;
+            color: #555;
+        }
+
+        pre {
+            background: #2d3748;
+            color: #a0aec0;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 13px;
+            line-height: 1.5;
+            margin: 10px 0;
+        }
+
+        .prompt-box {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            max-height: 500px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .small-note {
+            color: #666;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        hr {
+            border: none;
+            border-top: 2px solid #e0e0e0;
+            margin: 30px 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #results {
+            display: none;
+        }
+
+        #results.show {
+            display: block;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                border-right: none;
+                border-bottom: 1px solid #e0e0e0;
+                max-height: none;
+            }
+
+            .main-panel {
+                max-height: none;
+            }
+        }
+
+        .help-btn {
+  display:inline-flex; align-items:center; justify-content:center;
+  width:22px; height:22px; margin-left:8px; border:none; border-radius:50%;
+  background:#eef2ff; color:#4f46e5; font-weight:700; cursor:pointer;
+  box-shadow:0 1px 2px rgba(0,0,0,.06);
+}
+.help-btn:hover { background:#e0e7ff; }
+.help-box {
+  display:none; margin-top:8px; padding:12px; border-left:4px solid #667eea;
+  background:#f8fafc; border-radius:8px; color:#334155; font-size:13px;
+}
+.help-box.show { display:block; }
+.help-box b { color:#111827; }
+.help-box .lesson { display:inline-block; margin-top:6px; font-weight:600; color:#4f46e5; }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 Qual Análise Aplicar? – Assistente Estatístico</h1>
+            <p>Sistema inteligente para recomendação de análises e modelos estatísticos</p>
+        </header>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <h4 style="margin-bottom: 20px; color: #667eea;">Preencha o diagnóstico</h4>
+
+                <div class="form-group" data-help-for="objetivo">
+                    <label>1) Objetivo principal</label>
+                    <textarea id="objetivo" placeholder="Ex.: comparar 3 dietas; avaliar efeito do tempo e tratamento; dose–resposta..."></textarea>
+                </div>
+
+               <!-- <div class="form-group" data-help-for="descricao">
+                    <label>1b) Descrição do experimento (opcional)</label>
+                    <textarea id="descricao" placeholder="Descreva seu experimento: unidades experimentais, tratamentos aplicados, como foi conduzido, etc."></textarea>
+                </div>
+-->
+                <div class="form-group" data-help-for="ytype">
+                    <label>2) Tipo da variável resposta</label>
+                    <select id="ytype">
+                        <option value="cont_norm">Contínua ~ normal</option>
+                        <option value="cont_skew">Contínua assimétrica (positiva)</option>
+                        <option value="count">Contagem</option>
+                        <option value="binary">Binária (0/1)</option>
+                        <option value="prop">Proporção (0–1)</option>
+                        <option value="surv">Tempo até evento (sobrevivência)</option>
+                        <option value="ordinal">Ordinal</option>
+                    </select>
+                </div>
+
+                <div class="form-group" data-help-for="nfatores">
+                    <label>3) Nº de fatores (tratamentos)</label>
+                    <input type="number" id="nfatores" value="1" min="1" step="1">
+                </div>
+
+                <div class="form-group" data-help-for="interacao">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="interacao">
+                        <label for="interacao">Há interação de interesse entre fatores?</label>
+                    </div>
+                </div>
+
+                <div class="form-group" data-help-for="repmed">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="repmed">
+                        <label for="repmed">4) Há medidas repetidas NO TEMPO (mesma unidade medida em vários tempos)?</label>
+                    </div>
+                </div>
+
+               <div class="form-group" data-help-for="design">
+                    <label>5) Delineamento experimental</label>
+                    <select id="design">
+                        <option value="DIC">DIC (inteiramente casualizado)</option>
+                        <option value="DBC">DBC (blocos)</option>
+                        <option value="DQL">DQL (quadrado latino)</option>
+                        <option value="Fatorial">Fatorial</option>
+                        <option value="SplitPlot">Parcelas subdivididas (split-plot)</option>
+                        <option value="Outro">Outro</option>
+                    </select>
+                </div>
+
+                <div class="form-group" data-help-for="ranef">
+                    <label>6) Efeitos aleatórios previstos</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="ranef_bloco" value="bloco">
+                            <label for="ranef_bloco">Bloco</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="ranef_ind" value="ind">
+                            <label for="ranef_ind">Indivíduo</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="ranef_parcela" value="parcela">
+                            <label for="ranef_parcela">Parcela</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="ranef_outro" value="outro">
+                            <label for="ranef_outro">Outro</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" data-help-for="rep">
+                    <label>7) Repetições por grupo/nível (aprox.)</label>
+                    <input type="number" id="rep" value="3" min="1" step="1">
+                </div>
+
+                <div class="form-group" data-help-for="norm">
+                    <label>8) Normalidade/Homoscedasticidade</label>
+                    <select id="norm">
+                        <option value="ok">Verificada e ok</option>
+                        <option value="no">Não verificada</option>
+                        <option value="incerto">Incerto</option>
+                    </select>
+                </div>
+
+                <div class="form-group" data-help-for="relacao">
+                    <label>9) Relação esperada</label>
+                    <select id="relacao">
+                        <option value="linear">Linear</option>
+                        <option value="nlinear">Não linear (curva)</option>
+                    </select>
+                </div>
+
+                <div id="count_options" class="hidden" data-help-for="count">
+                    <div class="form-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="overdisp" checked>
+                            <label for="overdisp">Contagem: suspeita de sobredispersão?</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="zeroinf">
+                            <label for="zeroinf">Contagem: suspeita de excesso de zeros?</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="prop_options" class="hidden" data-help-for="prop">
+                    <div class="form-group">
+                        <label>Proporção</label>
+                        <select id="prop_tipo">
+                            <option value="binom">Sucesso/n conhecido (binomial com pesos)</option>
+                            <option value="beta">Proporção contínua em (0,1)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="surv_options" class="hidden" data-help-for="surv">
+                    <div class="form-group">
+                        <label>Sobrevivência: tipo de censura</label>
+                        <select id="cens">
+                            <option value="right">Direita</option>
+                            <option value="left">Esquerda</option>
+                            <option value="interval">Intervalar</option>
+                            <option value="mixed">Mista/Incerta</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn-primary" onclick="gerarRecomendacao()">Gerar Recomendação</button>
+            </div>
+
+            <div class="main-panel">
+                <div id="results">
+                    <h3 style="color: #667eea; margin-bottom: 20px;">Recomendação</h3>
+                    <div id="recommendation"></div>
+
+                    <hr>
+
+                    <h3 style="color: #667eea; margin-bottom: 10px;">Prompt Final para a IA</h3>
+                    <div class="small-note">
+                        Este texto resume seu caso e pede à IA a análise/melhor modelo com fórmula, código R e diagnósticos.
+                    </div>
+                    <div id="prompt_final" class="prompt-box"></div>
+                    <div class="button-group">
+                    <button class="btn-download" onclick="baixarPrompt()">📥 Baixar Prompt (.txt)</button>
+                    <button id="btnCopy" class="btn-copy" onclick="copiarPrompt()">📋 Copiar texto</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mostrar/ocultar opções condicionais
+        document.getElementById('ytype').addEventListener('change', function() {
+            const val = this.value;
+            document.getElementById('count_options').classList.toggle('hidden', val !== 'count');
+            document.getElementById('prop_options').classList.toggle('hidden', val !== 'prop');
+            document.getElementById('surv_options').classList.toggle('hidden', val !== 'surv');
+        });
+
+        function getRandomEffects() {
+            const ranefs = [];
+            if (document.getElementById('ranef_bloco').checked) ranefs.push('bloco');
+            if (document.getElementById('ranef_ind').checked) ranefs.push('ind');
+            if (document.getElementById('ranef_parcela').checked) ranefs.push('parcela');
+            if (document.getElementById('ranef_outro').checked) ranefs.push('outro');
+            return ranefs;
+        }
+
+        function decideModel() {
+            const ytype = document.getElementById('ytype').value;
+            const nf = parseInt(document.getElementById('nfatores').value);
+            const inter = document.getElementById('interacao').checked;
+            const repmed = document.getElementById('repmed').checked;
+            const design = document.getElementById('design').value;
+            const ranef = getRandomEffects();
+            const norm = document.getElementById('norm').value;
+            const rel = document.getElementById('relacao').value;
+            const overdisp = document.getElementById('overdisp').checked;
+            const zeroinf = document.getElementById('zeroinf').checked;
+            const prop_tipo = document.getElementById('prop_tipo').value;
+            const cens = document.getElementById('cens').value;
+
+            let analise = "—";
+            let modelo = "—";
+            let just = [];
+            let formula = "—";
+            let codigo = "";
+            let sup = [];
+            let alt = [];
+            let vis = [];
+
+            // Regras principais
+            if (ytype === "surv") {
+                analise = "Análise de Sobrevivência (Kaplan–Meier + Cox)";
+                modelo = "Modelo de Riscos Proporcionais de Cox";
+                just.push("Resposta é tempo até evento; comparar sobrevivência e estimar HR.");
+                formula = "h(t|X) = h0(t) * exp(β1 X1 + β2 X2 + ...)";
+                codigo = `library(survival); library(survminer)
+fit_km <- survfit(Surv(tempo, status) ~ grupo, data=dat)
+ggsurvplot(fit_km)
+fit_cox <- coxph(Surv(tempo, status) ~ grupo + covariaveis, data=dat)
+summary(fit_cox)`;
+                sup.push("Proporcionalidade de riscos (teste de Schoenfeld).");
+                alt.push("Se HR não proporcional: estratificar ou usar Cox com efeitos de tempo (tv).");
+                vis.push("Curvas Kaplan–Meier e forest plot de HR.");
+            } else if (rel === "nlinear") {
+                if (!repmed && ranef.length === 0) {
+                    analise = "Ajuste de Curva Não Linear (NLS)";
+                    modelo = "Modelo Não Linear (ex.: Logístico, Gompertz, Michaelis–Menten)";
+                    just.push("Relação esperada não linear sem estrutura aleatória/hierárquica.");
+                    formula = "y = f(x; θ)  (ex.: y = Asym/(1 + exp(-(x - xmid)/scal)))";
+                    codigo = `fit <- nls(y ~ SSlogis(x, Asym, xmid, scal), data=dat)
+summary(fit)`;
+                    sup.push("Especificação adequada da forma funcional; checar resíduos.");
+                    alt.push("Se variação entre indivíduos/parcela: usar NLME com efeitos aleatórios.");
+                    vis.push("Curva ajustada sobreposta aos dados; derivadas quando relevante.");
+                } else {
+                    analise = "Ajuste Não Linear com Efeitos Aleatórios (NLME)";
+                    modelo = "Modelo Não Linear Misto (NLME)";
+                    just.push("Relação não linear com heterogeneidade entre unidades (efeitos aleatórios).");
+                    formula = "y_ij = f(x_ij; θ + b_i) + ε_ij,  b_i ~ N(0, Σ)";
+                    codigo = `library(nlme)
+fit <- nlme(y ~ Asym/(1+exp(-(x-xmid)/scal)),
+            fixed = Asym + xmid + scal ~ 1,
+            random = Asym ~ 1 | id,
+            data = dat, start = c(Asym=..., xmid=..., scal=...))
+summary(fit)`;
+                    sup.push("Inicialização (start) coerente e convergência; estrutura de variância/correlação.");
+                    alt.push("Comparar formas funcionais por AIC/BIC; considerar transformação.");
+                    vis.push("Curvas por indivíduo/grupo e média do modelo.");
+                }
+            } else if (ytype === "cont_norm") {
+                if (repmed || ranef.includes('ind') || ['DBC','DQL','SplitPlot'].includes(design)) {
+                    analise = "Comparação/efeitos com Medidas Repetidas ou Hierarquia";
+                    modelo = "Modelo Misto Linear (LMM)";
+                    just.push("Dados normais com efeitos aleatórios (indivíduo/bloco) e/ou repetição no tempo.");
+                    just.push("Use lmer (lme4) para modelos mistos quando há efeitos aleatórios.");
+                    formula = "y = Xβ + Zb + ε,  b ~ N(0, D), ε ~ N(0, R)";
+                    codigo = `library(lme4); library(lmerTest)
+fit <- lmer(y ~ fatores + (1|id) + (1|bloco), data=dat)
+summary(fit); anova(fit)`;
+                    sup.push("Normalidade/homoscedasticidade dos resíduos; ICC; estrutura de correlação se necessário (nlme::lme).");
+                    alt.push("Se violação grave de normalidade: transformar y ou considerar GLMM apropriado (glmer/glmmTMB).");
+                    vis.push("Médias ajustadas (emmeans) com IC; barras de erro; efeitos marginais.");
+                } else {
+                    if (nf === 1) {
+                        analise = "Comparação de médias entre grupos";
+                        modelo = "ANOVA One-Way (ou ANCOVA se houver covariável)";
+                        just.push("Resposta contínua ~ normal; grupos independentes; delineamento simples.");
+                        formula = "y_ij = μ + T_i + ε_ij";
+                        codigo = `fit <- aov(y ~ grupo, data=dat)
+summary(fit)
+library(emmeans)
+emmeans(fit, ~ grupo) |> pairs(adjust='tukey')`;
+                        sup.push("Normalidade e variâncias homogêneas; independência.");
+                        alt.push("Se normalidade falhar: Kruskal–Wallis + Dunn.");
+                        vis.push("Médias com IC95% e letras de agrupamento.");
+                    } else {
+                        analise = "Efeitos principais e interação";
+                        modelo = "ANOVA Fatorial";
+                        just.push("Resposta contínua ~ normal; ≥2 fatores com possível interação.");
+                        formula = "y = μ + A + B + A:B + ε";
+                        codigo = `fit <- aov(y ~ A*B, data=dat)
+summary(fit)
+library(emmeans)
+emmeans(fit, ~ A*B)`;
+                        sup.push("Normalidade, homoscedasticidade e balanço razoável.");
+                        alt.push("Se houver blocos relevantes: considerar LMM com (1|bloco).");
+                        vis.push("Efeitos marginais e interação (plots de linhas com IC).");
+                    }
+                }
+            } else if (ytype === "binary") {
+                analise = "Resposta binária";
+                if (repmed || ranef.length > 0) {
+                    modelo = "GLMM Binomial (logit) com efeitos aleatórios";
+                    just.push("0/1 com hierarquia/repetidas; necessidade de componente aleatório.");
+                    just.push("Use glmer (lme4) ou glmmTMB para modelos mistos generalizados com efeitos aleatórios.");
+                    formula = "logit(P(Y=1)) = Xβ + Zb";
+                    codigo = `library(lme4)
+fit <- glmer(y ~ x + (1|id), family=binomial, data=dat)
+# Ou com glmmTMB:
+library(glmmTMB)
+fit2 <- glmmTMB(y ~ x + (1|id), family=binomial, data=dat)
+summary(fit)`;
+                } else {
+                    modelo = "GLM Binomial (logit)";
+                    just.push("0/1 independentes sem estrutura aleatória.");
+                    formula = "logit(P(Y=1)) = β0 + β1 X1 + ...";
+                    codigo = `fit <- glm(y ~ x, family=binomial(link='logit'), data=dat)
+summary(fit)`;
+                }
+                sup.push("Separação/quase-separação; influência; pseudo-R².");
+                alt.push("Se overfit: penalização (ridge/firth).");
+                vis.push("Probabilidades previstas por grupo/nível de x (IC).");
+            } else if (ytype === "count") {
+                analise = "Resposta de contagem";
+                if (repmed || ranef.length > 0) {
+                    if (overdisp || zeroinf) {
+                        modelo = zeroinf ? "GLMM Binomial Negativa Zero-Inflada" : "GLMM Binomial Negativa";
+                        just.push("Contagem com sobredispersão/excesso de zeros e estrutura aleatória.");
+                        just.push("Use glmer.nb (lme4) ou glmmTMB para modelos mistos generalizados com efeitos aleatórios.");
+                        formula = "log(E[Y]) = Xβ + Zb   (+ componente zero-inflado)";
+                        codigo = zeroinf ?
+`library(glmmTMB)
+fit <- glmmTMB(y ~ x + (1|id), ziformula=~1, family=nbinom2, data=dat)
+summary(fit)` :
+`library(lme4)
+fit <- glmer.nb(y ~ x + (1|id), data=dat)
+# Ou com glmmTMB:
+library(glmmTMB)
+fit2 <- glmmTMB(y ~ x + (1|id), family=nbinom2, data=dat)
+summary(fit)`;
+                    } else {
+                        modelo = "GLMM Poisson";
+                        just.push("Contagem com variância ~ média e efeitos aleatórios.");
+                        just.push("Use glmer (lme4) para modelos mistos generalizados Poisson com efeitos aleatórios.");
+                        formula = "log(E[Y]) = Xβ + Zb";
+                        codigo = `library(lme4)
+fit <- glmer(y ~ x + (1|id), family=poisson, data=dat)
+summary(fit)`;
+                    }
+                } else {
+                    if (overdisp || zeroinf) {
+                        modelo = zeroinf ? "GLM Binomial Negativa Zero-Inflada" : "GLM Binomial Negativa";
+                        just.push("Contagem com sobredispersão/excesso de zeros.");
+                        formula = "log(E[Y]) = β0 + β1 X1 + ...";
+                        codigo = zeroinf ?
+`library(glmmTMB)
+fit <- glmmTMB(y ~ x, ziformula=~1, family=nbinom2, data=dat)
+summary(fit)` :
+`library(MASS)
+fit <- glm.nb(y ~ x, data=dat)
+summary(fit)`;
+                    } else {
+                        modelo = "GLM Poisson";
+                        just.push("Contagem aproximadamente Poisson sem sobredispersão.");
+                        formula = "log(E[Y]) = β0 + β1 X1 + ...";
+                        codigo = `fit <- glm(y ~ x, family=poisson, data=dat)
+dispersiontest::dispersiontest(fit)`;
+                    }
+                }
+                sup.push("Checar sobredispersão; resíduos; influência.");
+                alt.push("Se sobredispersão: migrar para NegBin; se zeros: zero-inflado/hurdle.");
+                vis.push("Taxas previstas por grupo/nível (IC).");
+            } else if (ytype === "prop") {
+                analise = "Resposta proporcional";
+                if (prop_tipo === "binom") {
+                    if (repmed || ranef.length > 0) {
+                        modelo = "GLMM Binomial com pesos (sucessos/n)";
+                        just.push("Proporção com denominador conhecido e hierarquia.");
+                        formula = "logit(p) = Xβ + Zb;  cbind(sucesso, n - sucesso)";
+                        codigo = `library(glmmTMB)
+fit <- glmmTMB(cbind(sucesso, n - sucesso) ~ x + (1|id), family=binomial, data=dat)
+summary(fit)`;
+                    } else {
+                        modelo = "GLM Binomial com pesos (sucessos/n)";
+                        just.push("Proporção com n conhecido e observações independentes.");
+                        formula = "logit(p) = β0 + β1 X1 + ... ;  cbind(sucesso, n - sucesso)";
+                        codigo = `fit <- glm(cbind(sucesso, n - sucesso) ~ x, family=binomial, data=dat)
+summary(fit)`;
+                    }
+                } else {
+                    if (repmed || ranef.length > 0) {
+                        modelo = "GLMM Beta";
+                        just.push("Proporção contínua em (0,1) com efeitos aleatórios.");
+                        formula = "g(μ) = Xβ + Zb,  Y ~ Beta(μ, φ)";
+                        codigo = `library(glmmTMB)
+fit <- glmmTMB(y ~ x + (1|id), family=beta_family(), data=dat)
+summary(fit)`;
+                    } else {
+                        modelo = "Beta Regression";
+                        just.push("Proporção contínua (0,1) independente.");
+                        formula = "g(μ) = β0 + β1 X1 + ... ,  Y ~ Beta(μ, φ)";
+                        codigo = `library(betareg)
+fit <- betareg::betareg(y ~ x, data=dat)
+summary(fit)`;
+                    }
+                }
+                sup.push("Transformar valores 0/1 puros (ajuste para (0,1)); checar resíduos.");
+                alt.push("Quasi-binomial como alternativa robusta; GLMM se hierarquia forte.");
+                vis.push("Probabilidades médias e IC por grupo/nível de x.");
+            } else if (ytype === "cont_skew") {
+                analise = "Resposta contínua assimétrica";
+                if (repmed || ranef.length > 0) {
+                    modelo = "LMM após transformação (log) ou GLMM Gamma";
+                    just.push("Assimetria + estrutura aleatória; considerar link apropriado.");
+                    formula = "log(y) = Xβ + Zb + ε  (ou)  g(μ) = Xβ + Zb, Y ~ Gamma";
+                    codigo = `# Opção 1: transformar
+library(lme4); fit <- lmer(log(y) ~ x + (1|id), data=dat)
+# Opção 2: GLMM Gamma
+library(glmmTMB); fit2 <- glmmTMB(y ~ x + (1|id), family=Gamma(link='log'), data=dat)
+summary(fit); summary(fit2)`;
+                } else {
+                    modelo = "GLM Gamma (link log) ou LM em log(y)";
+                    just.push("Assimetria positiva; variância crescente com média.");
+                    formula = "log(μ) = β0 + β1 X1 + ... ,  Y ~ Gamma";
+                    codigo = `# Opção 1: GLM Gamma
+fit <- glm(y ~ x, family=Gamma(link='log'), data=dat)
+# Opção 2: LM em log(y)
+fit2 <- lm(log(y) ~ x, data=dat)`;
+                }
+                sup.push("Aderência do link; resíduos; influência.");
+                alt.push("gamlss (flexível) ou transformação Box–Cox.");
+                vis.push("Médias previstas no espaço original (back-transform).");
+            } else if (ytype === "ordinal") {
+                analise = "Resposta ordinal";
+                modelo = "Modelo Logit Proporcional (ordinal)";
+                just.push("Categorias ordenadas (ex.: leve, moderado, grave).");
+                formula = "logit[P(Y ≤ k)] = θ_k − Xβ";
+                codigo = `library(MASS)
+fit <- MASS::polr(ordinal ~ x, data=dat, Hess=TRUE)
+summary(fit)`;
+                sup.push("Suposição de odds proporcionais; teste de Brant (VGAM).");
+                alt.push("Modelos parciais de odds proporcionais (VGAM).");
+                vis.push("Probabilidades por categoria e efeitos marginais.");
+            }
+
+            return {
+                analise: analise,
+                modelo: modelo,
+                just: just,
+                formula: formula,
+                codigo: codigo,
+                sup: sup,
+                alt: alt,
+                vis: vis
+            };
+        }
+
+        function buildPrompt(rec) {
+            const objetivo = document.getElementById('objetivo').value || "—";
+            const descricao = document.getElementById('descricao').value || "—";
+            const ytype = document.getElementById('ytype').value;
+            const nf = document.getElementById('nfatores').value;
+            const inter = document.getElementById('interacao').checked;
+            const repmed = document.getElementById('repmed').checked;
+            const design = document.getElementById('design').value;
+            const ranef = getRandomEffects();
+            const rep = document.getElementById('rep').value;
+            const norm = document.getElementById('norm').value;
+            const rel = document.getElementById('relacao').value;
+            const overdisp = document.getElementById('overdisp').checked;
+            const zeroinf = document.getElementById('zeroinf').checked;
+            const prop_tipo = document.getElementById('prop_tipo').value;
+            const cens = document.getElementById('cens').value;
+
+            let lines = [
+                "Você é um consultor estatístico. Com base nas informações abaixo, recomende a análise e o MELHOR MODELO estatístico (com justificativa curta), forneça a fórmula do modelo, código R mínimo (pacotes), diagnósticos e alternativa se suposições falharem.",
+                "",
+                "--- CONTEXTO DO MEU PROBLEMA ---",
+                `Objetivo: ${objetivo}`,
+            ];
+
+            if (descricao !== "—") {
+                lines.push(`Descrição do experimento: ${descricao}`);
+            }
+
+            lines.push(
+                `Tipo da resposta: ${ytype}`,
+                `Nº de fatores: ${nf}${inter ? " (com interação de interesse)" : ""}`,
+                `Medidas repetidas NO TEMPO: ${repmed ? "Sim" : "Não"}`,
+                `Delineamento: ${design}`,
+                `Efeitos aleatórios previstos: ${ranef.length === 0 ? "Nenhum" : ranef.join(", ")}`,
+            );
+
+            // Adicionar orientação sobre modelos mistos
+            if (ranef.length > 0 || repmed) {
+                lines.push("");
+                lines.push("⚠️ IMPORTANTE: Como há efeitos aleatórios ou medidas repetidas:");
+                if (ytype === "cont_norm" && norm === "ok") {
+                    lines.push("- Use MODELO MISTO LINEAR com lmer (pacote lme4) para dados normais");
+                } else if (ytype !== "cont_norm" || norm !== "ok") {
+                    lines.push("- Use MODELO MISTO GENERALIZADO com glmer (lme4) ou glmmTMB para dados não normais");
+                }
+                lines.push("");
+            }
+
+            lines.push(
+                `Repetições por grupo (aprox.): ${rep}`,
+                `Normalidade/homoscedasticidade: ${norm}`,
+                `Relação esperada: ${rel}`
+            );
+
+            if (ytype === "count") {
+                lines.push(`Contagem – Sobredispersão: ${overdisp} | Excesso de zeros: ${zeroinf}`);
+            }
+            if (ytype === "prop") {
+                lines.push(`Proporção – Tipo: ${prop_tipo}`);
+            }
+            if (ytype === "surv") {
+                lines.push(`Sobrevivência – Censura: ${cens}`);
+            }
+
+            lines.push("");
+            lines.push("--- O QUE EU PRECISO COMO RESPOSTA ---");
+            lines.push("1) Nome da análise recomendada (1 linha).");
+            lines.push("2) Melhor modelo estatístico (com justificativa curta).");
+            lines.push("3) Fórmula do modelo (notação).");
+            lines.push("4) Descrição do delineamento/experimento e papéis de efeitos fixos/aleatórios.");
+            lines.push("5) Código R mínimo reprodutível (pacotes e funções).");
+            lines.push("6) Suposições e como diagnosticar (passo a passo).");
+            lines.push("7) Alternativas se suposições falharem.");
+            lines.push("8) Visualização recomendada (camadas ggplot/emmeans).");
+            lines.push("");
+            lines.push("--- SUGESTÃO INICIAL AUTOMÁTICA (pode confirmar ou ajustar) ---");
+            lines.push(`Análise sugerida: ${rec.analise}`);
+            lines.push(`Melhor modelo: ${rec.modelo}`);
+            lines.push("Justificativa curta:");
+            if (rec.just.length > 0) {
+                rec.just.forEach(j => lines.push(`• ${j}`));
+            } else {
+                lines.push("• —");
+            }
+            lines.push(`Fórmula: ${rec.formula}`);
+            lines.push("Pacotes/código base:");
+            lines.push(rec.codigo);
+            lines.push("Suposições/checar:");
+            if (rec.sup.length > 0) {
+                rec.sup.forEach(s => lines.push(`• ${s}`));
+            } else {
+                lines.push("• —");
+            }
+            lines.push("Alternativas:");
+            if (rec.alt.length > 0) {
+                rec.alt.forEach(a => lines.push(`• ${a}`));
+            } else {
+                lines.push("• —");
+            }
+            lines.push("Visualização:");
+            if (rec.vis.length > 0) {
+                rec.vis.forEach(v => lines.push(`• ${v}`));
+            } else {
+                lines.push("• —");
+            }
+
+            return lines.join("\n");
+        }
+
+        function gerarRecomendacao() {
+            const rec = decideModel();
+
+            // Montar HTML da recomendação
+            let html = `
+                <div class="recommendation-box">
+                    <div class="section-title">🔍 Análise Recomendada:</div>
+                    <p><strong>${rec.analise}</strong></p>
+                </div>
+
+                <div class="recommendation-box">
+                    <div class="section-title">🎯 Melhor Modelo Estatístico:</div>
+                    <p><strong>${rec.modelo}</strong></p>
+                </div>
+
+                <div class="recommendation-box">
+                    <div class="section-title">📘 Justificativa curta:</div>
+                    <ul>
+                        ${rec.just.map(j => `<li>${j}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="recommendation-box">
+                    <div class="section-title">∑ Fórmula (notação):</div>
+                    <pre>${rec.formula}</pre>
+                </div>
+
+                <div class="recommendation-box">
+                    <div class="section-title">🔧 R – Código mínimo:</div>
+                    <pre>${rec.codigo}</pre>
+                </div>
+
+                <div class="recommendation-box">
+                    <div class="section-title">✅ Suposições/checagens:</div>
+                    <ul>
+                        ${rec.sup.map(s => `<li>${s}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="recommendation-box">
+                    <div class="section-title">🔄 Alternativas:</div>
+                    <ul>
+                        ${rec.alt.map(a => `<li>${a}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="recommendation-box">
+                    <div class="section-title">📊 Visualização recomendada:</div>
+                    <ul>
+                        ${rec.vis.map(v => `<li>${v}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+
+            document.getElementById('recommendation').innerHTML = html;
+            document.getElementById('prompt_final').textContent = buildPrompt(rec);
+            document.getElementById('results').classList.add('show');
+
+            // Scroll suave para os resultados
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function baixarPrompt() {
+            const rec = decideModel();
+            const text = buildPrompt(rec);
+            const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'prompt_analise_estatistica.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+    function copiarPrompt() {
+    const el = document.getElementById('prompt_final');
+    const text = (el?.textContent || el?.innerText || '').trim();
+    const btn = document.getElementById('btnCopy');
+    if (!text) {
+      feedbackCopy(btn, false, '⚠️ Sem texto');
+      return;
+    }
+
+    // Preferência: API moderna (requer contexto seguro — https:)
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text)
+        .then(() => feedbackCopy(btn, true))
+        .catch(() => fallbackCopy(text, btn));
+    } else {
+      // Fallback para http/ambientes não seguros
+      fallbackCopy(text, btn);
+    }
+  }
+
+  function fallbackCopy(text, btn) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.top = '-1000px';
+    document.body.appendChild(ta);
+    ta.select();
+    ta.setSelectionRange(0, ta.value.length);
+    try {
+      const ok = document.execCommand('copy');
+      feedbackCopy(btn, ok);
+    } catch (e) {
+      feedbackCopy(btn, false);
+    }
+    document.body.removeChild(ta);
+  }
+
+  function feedbackCopy(btn, ok, altMsg) {
+    const original = btn.textContent;
+    btn.classList.toggle('copied', ok);
+    btn.textContent = ok ? '✅ Copiado!' : (altMsg || '⚠️ Não copiado');
+    btn.disabled = true;
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.textContent = original;
+      btn.disabled = false;
+    }, 1500);
+  }
+
+
+
+  /* ===== 3.1. Textos de ajuda + mapeamento das aulas ===== */
+const HELP_TEXT = {
+  objetivo: {
+    html: `
+      <b>O que escrever?</b> Descreva em 1–2 linhas qual pergunta científica você quer responder (comparar dietas, efeito do tempo, dose–resposta etc.).<br>
+      <span class="lesson">Assista: Aula 1 — Estatística Descritiva (enquadrar objetivos) + Aula 3 — ANOVA (comparações) + Aula 6 — Regressão (associação)</span>
+    `
+  },
+  descricao: {
+    html: `
+      <b>Descrição do experimento</b> Diga a unidade experimental, como os tratamentos foram aplicados, se houve blocos/parcelas, e como foram coletadas as medidas.<br>
+      <span class="lesson">Assista: Aula 4 — Delineamentos Experimentais</span>
+    `
+  },
+  ytype: {
+    html: `
+      <b>Tipo da variável resposta</b> Escolha o formato dos dados que você mede: contínua normal/assimétrica, contagem, binária, proporção, tempo até evento, ordinal.<br>
+      <span class="lesson">Assista: Aula 2 — Normalidade; Aula 9 — GLM; Aula 10 — Não Paramétricos; Aula 11 — Sobrevivência</span>
+    `
+  },
+  nfatores: {
+    html: `
+      <b>Nº de fatores</b> Quantos fatores (tratamentos) seus dados têm? (ex.: dieta, tempo, dose).<br>
+      <span class="lesson">Assista: Aula 3 — ANOVA (fatorial)</span>
+    `
+  },
+  interacao: {
+    html: `
+      <b>Interação</b> Interação ocorre quando o efeito de um fator depende do nível de outro (ex.: dieta × tempo).<br>
+      <span class="lesson">Assista: Aula 3 — ANOVA (efeitos principais × interação)</span>
+    `
+  },
+  repmed: {
+    html: `
+      <b>Medidas repetidas</b> A mesma unidade foi medida no tempo? Isso requer estrutura de correlação/efeitos aleatórios.<br>
+      <span class="lesson">Assista: Aula 8 — Modelos Mistos</span>
+    `
+  },
+  design: {
+    html: `
+      <b>Delineamento</b> DIC, DBC, DQL, Fatorial, Split-plot. O delineamento impacta o modelo e os erros apropriados.<br>
+      <span class="lesson">Assista: Aula 4 — Delineamentos Experimentais</span>
+    `
+  },
+  ranef: {
+    html: `
+      <b>Efeitos aleatórios</b> Bloco, indivíduo, parcela… Capturam variação não explicada e correlação intra-unidade.<br>
+      <span class="lesson">Assista: Aula 8 — Modelos Mistos</span>
+    `
+  },
+  rep: {
+    html: `
+      <b>Repetições</b> Quantas unidades por grupo/nível. Afeta poder estatístico e precisão das estimativas.<br>
+      <span class="lesson">Assista: Aula 7 — Power Analysis</span>
+    `
+  },
+  norm: {
+    html: `
+      <b>Normalidade/homoscedasticidade</b> Requisitos para testes/modelos paramétricos. Teste e avalie resíduos e QQ-plot.<br>
+      <span class="lesson">Assista: Aula 2 — Testes de Normalidade</span>
+    `
+  },
+  relacao: {
+    html: `
+      <b>Relação esperada</b> Linear vs. não linear (curvas). Isso define LM/GLM vs. NLS/NLME.<br>
+      <span class="lesson">Assista: Aula 6 — Regressão Linear; Aula 12 — Modelos Não Lineares</span>
+    `
+  },
+  count: {
+    html: `
+      <b>Contagem</b> Verifique sobredispersão (variância >> média) e excesso de zeros para escolher Poisson vs. Binomial Negativa (zero-inflado).<br>
+      <span class="lesson">Assista: Aula 9 — GLM (Poisson, Binomial Negativa)</span>
+    `
+  },
+  prop: {
+    html: `
+      <b>Proporção</b> Sucessos/n (binomial com pesos) vs. proporção contínua em (0,1) (beta regression).<br>
+      <span class="lesson">Assista: Aula 9 — GLM (Binomial, Beta)</span>
+    `
+  },
+  surv: {
+    html: `
+      <b>Sobrevivência</b> Tipo de censura (direita, esquerda, intervalar) determina a formulação e diagnósticos (PH).<br>
+      <span class="lesson">Assista: Aula 11 — Análise de Sobrevivência</span>
+    `
+  }
+};
+
+/* ===== 3.2. Injeta o botão “?” e a caixa de ajuda em cada .form-group[data-help-for] ===== */
+function setupHelp() {
+  document.querySelectorAll('.form-group[data-help-for], #count_options[data-help-for], #prop_options[data-help-for], #surv_options[data-help-for]')
+    .forEach(group => {
+      const key = group.getAttribute('data-help-for');
+      const help = HELP_TEXT[key];
+      if (!help) return;
+
+      // acha o primeiro <label> dentro do grupo (ou cria um wrapper)
+      const label = group.querySelector('label') || group.firstElementChild;
+      if (!label) return;
+
+      // botão ?
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'help-btn';
+      btn.textContent = '?';
+
+      // caixa
+      const box = document.createElement('div');
+      box.className = 'help-box';
+      box.innerHTML = help.html;
+
+      btn.addEventListener('click', () => box.classList.toggle('show'));
+
+      // injeta
+      label.appendChild(btn);
+      label.insertAdjacentElement('afterend', box);
+    });
+}
+
+/* ===== 3.3. Lista dinâmica de aulas relevantes para exibir na Recomendação ===== */
+function aulasRelevantes() {
+  const out = new Set();
+  const ytype = document.getElementById('ytype').value;
+  const nf = +document.getElementById('nfatores').value || 1;
+  const inter = document.getElementById('interacao').checked;
+  const repmed = document.getElementById('repmed').checked;
+  const design = document.getElementById('design').value;
+  const ranef = (document.getElementById('ranef_bloco').checked ||
+                 document.getElementById('ranef_ind').checked ||
+                 document.getElementById('ranef_parcela').checked ||
+                 document.getElementById('ranef_outro').checked);
+  const norm = document.getElementById('norm').value;
+  const rel = document.getElementById('relacao').value;
+  const overdisp = document.getElementById('overdisp')?.checked;
+  const zeroinf = document.getElementById('zeroinf')?.checked;
+  const prop_tipo = document.getElementById('prop_tipo')?.value;
+
+  // sempre úteis
+  out.add('Aula 1 — Estatística Descritiva');
+  if (norm !== 'ok') out.add('Aula 2 — Testes de Normalidade');
+
+  if (design !== 'Outro') out.add('Aula 4 — Delineamentos Experimentais');
+  if (nf >= 1) out.add('Aula 3 — ANOVA');
+
+  if (repmed || ranef) out.add('Aula 8 — Modelos Mistos');
+
+  if (rel === 'linear') out.add('Aula 6 — Regressão Linear');
+  if (rel === 'nlinear') out.add('Aula 12 — Modelos Não Lineares');
+
+  if (ytype === 'count' || ytype === 'binary' || ytype === 'prop' || ytype === 'cont_skew')
+    out.add('Aula 9 — GLM');
+
+  if (ytype === 'prop') out.add('Aula 9 — GLM (Binomial/Beta)');
+  if (ytype === 'count' && (overdisp || zeroinf)) out.add('Aula 9 — GLM (NegBin/Zero-Inflado)');
+
+  if (ytype === 'ordinal') out.add('Aula 9 — GLM (Ordinal)');
+  if (ytype === 'surv') out.add('Aula 11 — Sobrevivência');
+
+  out.add('Aula 7 — Power Analysis');
+
+  return Array.from(out);
+}
+
+/* ===== 3.4. Acrescenta “📚 Onde estudar no curso” na Recomendação ===== */
+const _oldGerar = gerarRecomendacao;
+gerarRecomendacao = function() {
+  _oldGerar(); // roda sua lógica original
+
+  const aulas = aulasRelevantes();
+  const sec = document.createElement('div');
+  sec.className = 'recommendation-box';
+  sec.innerHTML = `
+    <div class="section-title">📚 Onde estudar no curso</div>
+    <ul>${aulas.map(a => `<li>${a}</li>`).join('')}</ul>
+  `;
+  document.getElementById('recommendation').appendChild(sec);
+}
+
+/* ===== 3.5. Insere lembrete de normalidade dentro da PROMPT quando "Não verificada" ===== */
+const _oldBuild = buildPrompt;
+buildPrompt = function(rec) {
+  let txt = _oldBuild(rec);
+  const norm = document.getElementById('norm').value;
+  const aulas = aulasRelevantes();
+
+  // Lembrete explícito se normalidade não foi verificada
+  if (norm === 'no') {
+    txt += `
+
+⚠️ Observação importante:
+Antes de decidir o modelo final, assista a **Aula 2 — Testes de Normalidade** para avaliar normalidade/homoscedasticidade e ajustar conforme necessário.`;
+  }
+
+  // Informa que o aluno tem acesso às aulas relevantes
+  txt += `
+
+📚 Tenho acesso às seguintes aulas que cobrem este caso:
+- ${aulas.join('\n- ')}`;
+
+  return txt;
+}
+
+/* ===== 3.6. Inicializa quando a página carregar ===== */
+document.addEventListener('DOMContentLoaded', setupHelp);
+//setupHelp(); // caso o script carregue após DOM
+const FIELDS = ['objetivo','descricao','ytype','nfatores','interacao','repmed','design','ranef_bloco','ranef_ind','ranef_parcela','ranef_outro','rep','norm','relacao','overdisp','zeroinf','prop_tipo','cens'];
+
+function saveState() {
+  const state = {};
+  FIELDS.forEach(id => {
+    const el = $(id);
+    if (!el) return;
+    state[id] = el.type === 'checkbox' ? el.checked : el.value;
+  });
+  localStorage.setItem('assistente-estatistico', JSON.stringify(state));
+}
+
+function loadState() {
+  const raw = localStorage.getItem('assistente-estatistico');
+  if (!raw) return;
+  const state = JSON.parse(raw);
+  FIELDS.forEach(id => {
+    const el = $(id);
+    if (!el || state[id] === undefined) return;
+    if (el.type === 'checkbox') el.checked = state[id];
+    else el.value = state[id];
+  });
+  // garantir visibilidade dos blocos condicionais
+  const evt = new Event('change');
+  $('ytype')?.dispatchEvent(evt);
+}
+
+document.addEventListener('input', (e) => {
+  if (e.target && FIELDS.includes(e.target.id)) saveState();
+});
+document.addEventListener('DOMContentLoaded', loadState);
+    </script>
+</body>
+</html>
