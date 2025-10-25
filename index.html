@@ -304,14 +304,44 @@
 .help-box.show { display:block; }
 .help-box b { color:#111827; }
 .help-box .lesson { display:inline-block; margin-top:6px; font-weight:600; color:#4f46e5; }
+.btn-hotmart {
+  display:inline-flex; align-items:center; gap:10px;
+  padding:14px 18px; border:0; border-radius:10px;
+  background: linear-gradient(135deg,#ff7a59 0%,#ff4d4f 100%);
+  color:#fff; font-weight:700; font-size:15px; cursor:pointer;
+  box-shadow:0 10px 24px rgba(255,77,79,.35);
+  transition: transform .15s ease, box-shadow .15s ease, filter .2s ease;
+  text-decoration:none;
+}
+.btn-hotmart:hover { transform: translateY(-2px); filter: brightness(1.04); }
+.btn-hotmart:active { transform: translateY(0); }
+.btn-hotmart .icon { font-size:18px; }
 
+.logo {
+  display: block;
+  margin: 0 auto 15px auto;
+  width: 100px;
+  height: auto;
+  border-radius: 50%;
+}
     </style>
 </head>
 <body>
     <div class="container">
         <header>
+        <img src="logo.png" alt="Logo Estatística com R" class="logo">
             <h1>🎯 Qual Análise Aplicar? – Assistente Estatístico</h1>
             <p>Sistema inteligente para recomendação de análises e modelos estatísticos</p>
+
+<a class="btn-hotmart"
+     href="https://hotmart.com/pt-br/club/estatistica-com-r"
+     target="_blank" rel="noopener noreferrer">
+    🎓  Acesse o para conhecer as aulas, módulos e materiais do curso.
+  </a>
+
+
+
+
         </header>
 
         <div class="main-content">
