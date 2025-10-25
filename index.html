@@ -664,7 +664,7 @@ summary(fit)`;
                 analise = "Resposta de contagem";
                 if (repmed || ranef.length > 0) {
                     if (overdisp || zeroinf) {
-                        modelo = zeroinf ? "GLMM Binomial Negativa Zero-Inflada" : "GLMM Binomial Negativa";
+                        modelo = zeroinf ? "GLMM Poisson" : "GLMM POISSON";
                         just.push("Contagem com sobredispersão/excesso de zeros e estrutura aleatória.");
                         just.push("Use glmer.nb (lme4) ou glmmTMB para modelos mistos generalizados com efeitos aleatórios.");
                         formula = "log(E[Y]) = Xβ + Zb   (+ componente zero-inflado)";
