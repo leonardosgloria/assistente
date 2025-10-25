@@ -797,7 +797,6 @@ summary(fit)`;
 
         function buildPrompt(rec) {
             const objetivo = document.getElementById('objetivo').value || "—";
-            const descricao = document.getElementById('descricao').value || "—";
             const ytype = document.getElementById('ytype').value;
             const nf = document.getElementById('nfatores').value;
             const inter = document.getElementById('interacao').checked;
@@ -819,9 +818,6 @@ summary(fit)`;
                 `Objetivo: ${objetivo}`,
             ];
 
-            if (descricao !== "—") {
-                lines.push(`Descrição do experimento: ${descricao}`);
-            }
 
             lines.push(
                 `Tipo da resposta: ${ytype}`,
@@ -1040,12 +1036,6 @@ const HELP_TEXT = {
       <span class="lesson">Assista: Aula 1 — Estatística Descritiva (enquadrar objetivos) + Aula 3 — ANOVA (comparações) + Aula 6 — Regressão (associação)</span>
     `
   },
-  descricao: {
-    html: `
-      <b>Descrição do experimento</b> Diga a unidade experimental, como os tratamentos foram aplicados, se houve blocos/parcelas, e como foram coletadas as medidas.<br>
-      <span class="lesson">Assista: Aula 4 — Delineamentos Experimentais</span>
-    `
-  },
   ytype: {
     html: `
       <b>Tipo da variável resposta</b> Escolha o formato dos dados que você mede: contínua normal/assimétrica, contagem, binária, proporção, tempo até evento, ordinal.<br>
@@ -1237,7 +1227,7 @@ Antes de decidir o modelo final, assista a **Aula 2 — Testes de Normalidade** 
 /* ===== 3.6. Inicializa quando a página carregar ===== */
 document.addEventListener('DOMContentLoaded', setupHelp);
 //setupHelp(); // caso o script carregue após DOM
-const FIELDS = ['objetivo','descricao','ytype','nfatores','interacao','repmed','design','ranef_bloco','ranef_ind','ranef_parcela','ranef_outro','rep','norm','relacao','overdisp','zeroinf','prop_tipo','cens'];
+const FIELDS = ['objetivo','ytype','nfatores','interacao','repmed','design','ranef_bloco','ranef_ind','ranef_parcela','ranef_outro','rep','norm','relacao','overdisp','zeroinf','prop_tipo','cens'];
 
 function saveState() {
   const state = {};
